@@ -1,11 +1,17 @@
-from calendar import c
-
 import boto3
+
+try:
+    from mypy_boto3_s3 import S3Client
+    from mypy_boto3_s3.type_defs import PutObjectOutputTypeDef
+except ImportError:
+    print("boto3-stubs[s3] is not installed")
 
 BUCKET_NAME = "nrsmac-cloud-course-bucket"
 
 session = boto3.Session()
-s3_client = session.client("s3")
+s3_client: "S3Client" = session.client("s3")
 
 # Write a file to S3
-s3_client.put_object(Bucket=BUCKET_NAME, Key="folder/hello.txt", Body="Hello, world!", ContentType="text/plain")
+response: "PutObjectOutputTypeDef" = s3_client.put_object(
+    Bucket=BUCKET_NAME, Key="folder/hello.txt", Body="Hello, world!", ContentType="text/plain"
+)
