@@ -1,7 +1,7 @@
 // hover over or get autocompletion for the settings keys in this file to learn about what they do
 {
     "python.testing.pytestArgs": [
-        "tests"
+        "tests" // passed to Pytest CLI when running tests
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,

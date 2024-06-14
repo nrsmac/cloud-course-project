@@ -23,8 +23,9 @@ version = { file = "version.txt" }
 # optional dependencies can be installed with square brackets, e.g. `pip install my-package[test,static-code-qa]`
 [project.optional-dependencies]
 stubs = ["boto3-stubs[s3]"]
-test = ["pytest", "pytest-cov"]
+test = ["pytest", "pytest-cov", "pendulum"]
 release = ["build", "twine"]
+notebooks = ["jupyterlab", "ipykernel", "rich"]
 static-code-qa = [
     "pre-commit",
     "pylint",
@@ -40,7 +41,9 @@ static-code-qa = [
 # - automatically apply formatting
 # - show enhanced autocompletion for stubs libraries
 # See .vscode/settings.json to see how VS Code is configured to use these tools
-dev = ["cloud-course-project[test,release,static-code-qa,stubs]"] # Union, references test, release, static-code-qa
+dev = [
+    "cloud-course-project[test,release,static-code-qa,stubs,notebooks]",
+] # Union, references test, release, static-code-qa
 
 [build-system]
 # Minimum requirements for the build system to execute.
@@ -57,7 +60,9 @@ files_api = ["*.json"]
 ##############################
 
 [tool.pytest.ini_options]
-markers = ["slow: marks tests as slow (deselect with '-m \"not slow\"')"] # Add @slow decorator for long-running tests
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+] # Add @slow decorator for long-running tests
 
 [tool.black]
 line-length = 119
@@ -76,7 +81,7 @@ exclude = ["venv"]
 max-line-length = 119
 
 # radon, flake8 plugin that allows us to check for 'cyclimatic code complexity'
-radon-max-cc = 10 
+radon-max-cc = 10
 
 [tool.isort]
 profile = "black"
