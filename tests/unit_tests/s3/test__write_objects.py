@@ -25,13 +25,11 @@ def test__upload_s3_object():
         s3_client=s3_client,
     )
     # Check that the file was uploaded with correct content type
-    # TODO replace with our own function calls
     response = s3_client.get_object(Bucket=TEST_BUCKET_NAME, Key=object_key)
     assert response["ContentType"] == content_type
     assert response["Body"].read() == file_content
 
     # Clean up deleting all objects the bucket and the bucket itself
-    # TODO replace with our own function calls
     response = s3_client.list_objects_v2(Bucket=TEST_BUCKET_NAME)
     for obj in response.get("Contents", []):
         s3_client.delete_object(Bucket=TEST_BUCKET_NAME, Key=obj["Key"])
