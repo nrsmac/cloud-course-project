@@ -5,15 +5,10 @@ import boto3.exceptions
 import pytest
 
 try:
-    from mypy_boto3_s3 import S3Client
-    from mypy_boto3_s3.type_defs import (
-        GetObjectOutputTypeDef,
-        ObjectTypeDef,
-    )
+    pass
 except ImportError:  # pragma: no cover
     ...
 
-from files_api import s3
 from files_api.s3.read_objects import (
     fetch_s3_object,
     fetch_s3_objects_metadata,

@@ -13,7 +13,7 @@ from tests.consts import (
 
 # pylint: disable=unused-argument
 def test_delete_existing_s3_object(mocked_aws: None):
-    s3_client = boto3.client("s3")
+    boto3.client("s3")
     object_key = TEST_OBJECT_KEY
     file_content = b"Hello, World!"
     content_type = "text/plain"
