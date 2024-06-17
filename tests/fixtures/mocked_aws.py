@@ -8,8 +8,7 @@ from tests.consts import TEST_BUCKET_NAME
 
 
 def point_away_from_aws():
-    # Set the AWS environment variables to point to moto server
-    # This is necessary to run the tests locally
+    """Point the AWS environment environments to dummy values to avoid using real AWS."""
     os.environ["AWS_ACCESS"] = "test"
     os.environ["AWS_SECRET_ACCESS_KEY"] = "test"
     os.environ["AWS_SECURITY_TOKEN"] = "test"
@@ -17,8 +16,10 @@ def point_away_from_aws():
     os.environ["AWS_DEFAULT_REGION"] = "us-east-1"
 
 
+# flake8: noqa
 @fixture
 def mocked_aws():  # Fixtures represented as nouns instead of verbs
+    """A fixture that mocks AWS services using moto."""
     with mock_aws():
         point_away_from_aws()
 

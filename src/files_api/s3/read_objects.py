@@ -8,6 +8,7 @@ try:
     from mypy_boto3_s3 import S3Client
     from mypy_boto3_s3.type_defs import (
         GetObjectOutputTypeDef,
+        ListObjectsV2OutputTypeDef,
         ObjectTypeDef,
     )
 except ImportError:  # pragma: no cover
