@@ -14,7 +14,6 @@ from fastapi import (
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
-from files_api import s3
 from files_api.s3.delete_objects import delete_s3_object
 from files_api.s3.read_objects import (
     fetch_s3_object,
@@ -55,7 +54,14 @@ class FileMetadata(BaseModel):
 @APP.put("/files/{file_path:path}")
 async def upload_file(file_path: str, file: UploadFile, response: Response):
     """Upload a file."""
-    ...
+
+    file_contents: bytes = await file.read()
+    upload_s3_object(
+        bucket_name=S3_BUCKET_NAME,
+        object_key=file_path,
+        file_content=file_contents,
+        content_type=file.content_type,
+    )
 
 
 @APP.get("/files")

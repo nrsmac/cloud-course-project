@@ -7,6 +7,9 @@
 run:
 	bash run.sh run
 
+run-mock:
+	bash run.sh run
+
 build:
 	bash run.sh build
 

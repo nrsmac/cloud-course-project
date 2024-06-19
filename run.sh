@@ -17,11 +17,31 @@ MINIMUM_TEST_COVERAGE_PERCENT=0
 # install core and development Python dependencies into the currently activated venv
 function install {
     python -m pip install --upgrade pip
-    python -m pip install --editable "$THIS_DIR/[all]"
+    python -m pip install --editable "$THIS_DIR/[dev]"
 }
 
 function run {
     uvicorn files_api.main:APP --reload
+}
+
+function run-mock {
+    set +e
+
+    python -m moto.server -p 5000 &
+    MOTO_PID=$!
+
+    export AWS_ENDPOINT_URL="http://localhost:5000"
+    export AWS_ACCESS_KEY_ID="mock"
+    export AWS_SECRET_ACCESS_KEY="mock"
+
+    # Create a bucket called "some-bucket" in mock AWS
+    aws s3 mb s3://some-bucket
+
+    trap 'kill $MOTO_PID' EXIT
+
+    uvicorn files_api.main:APP --reload
+
+    wait $MOTO_PID
 }
 
 # run linting, formatting, and other static code quality tools
