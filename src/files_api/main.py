@@ -12,6 +12,7 @@ from fastapi import (
     status,
 )
 from fastapi.responses import StreamingResponse
+import pendulum
 from pydantic import BaseModel
 
 from files_api.s3.delete_objects import delete_s3_object
@@ -44,6 +45,9 @@ class FileMetadata(BaseModel):
 
 
 # more pydantic models ...
+class PutFileResponse(BaseModel):
+    file_path: str
+    message: str
 
 
 ##################
@@ -52,24 +56,70 @@ class FileMetadata(BaseModel):
 
 
 @APP.put("/files/{file_path:path}")
-async def upload_file(file_path: str, file: UploadFile, response: Response):
+async def upload_file(file_path: str, file: UploadFile, response: Response) -> PutFileResponse:
     """Upload a file."""
+    object_already_exists = object_exists_in_s3(bucket_name=S3_BUCKET_NAME, object_key=file_path)
+
+    if object_already_exists:
+        response_message = f"File already exists at path: /{file_path}"
+        response.status_code = status.HTTP_200_OK
+    else:
+        response_message = f"File uploaded successfully at path: /{file_path}"
+        response.status_code = status.HTTP_201_CREATED
 
     file_contents: bytes = await file.read()
+
     upload_s3_object(
         bucket_name=S3_BUCKET_NAME,
         object_key=file_path,
         file_content=file_contents,
         content_type=file.content_type,
     )
+    return PutFileResponse(file_path=file_path, message=response_message)
+
+
+class GetFilesQueryParams(BaseModel):
+    page_size: Optional[int] = 10
+    directory: Optional[str] = ""
+    page_token: Optional[str] = None
+
+
+class ListFilesResponse(BaseModel):
+    files: List[FileMetadata]
+    next_page_token: Optional[str]
 
 
 @APP.get("/files")
 async def list_files(
-    query_params=...,
-):
+    query_params: GetFilesQueryParams = Depends(),
+) -> ListFilesResponse:
     """List files with pagination."""
-    ...
+    if query_params.page_token:
+        files, next_page_token = fetch_s3_objects_using_page_token(
+            bucket_name=S3_BUCKET_NAME,
+            continuation_token=query_params.page_token,
+            max_keys=query_params.page_size,
+        )
+    else:
+        files, next_page_token = fetch_s3_objects_metadata(
+            bucket_name=S3_BUCKET_NAME,
+            prefix=query_params.directory,
+            max_keys=query_params.page_size,
+        )
+
+    file_metadata_objects = [
+        FileMetadata(
+            file_path=f"{file['Key']}",
+            last_modified=file["LastModified"],
+            size_bytes=file["Size"],
+        )
+        for file in files
+    ]
+
+    return ListFilesResponse(
+        files=file_metadata_objects,
+        next_page_token=next_page_token if next_page_token else None
+    )
 
 
 @APP.head("/files/{file_path:path}")
@@ -78,7 +128,14 @@ async def get_file_metadata(file_path: str, response: Response) -> Response:
 
     Note: by convention, HEAD requests MUST NOT return a body in the response.
     """
-    return
+    object = fetch_s3_object(bucket_name=S3_BUCKET_NAME, object_key=file_path)
+
+    response.headers["Content-Length"] = str(object["ContentLength"])
+    response.headers["Last-Modified"] = pendulum.instance(object["LastModified"]).to_rfc1123_string()
+    response.headers["Content-Type"] = object["ContentType"]
+    response.status_code = status.HTTP_200_OK
+
+    return response
 
 
 @APP.get("/files/{file_path:path}")

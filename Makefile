@@ -8,7 +8,7 @@ run:
 	bash run.sh run
 
 run-mock:
-	bash run.sh run
+	bash run.sh run-mock
 
 build:
 	bash run.sh build

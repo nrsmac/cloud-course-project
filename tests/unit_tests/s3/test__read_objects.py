@@ -10,10 +10,8 @@ from files_api.s3.read_objects import (
     fetch_s3_objects_using_page_token,
     object_exists_in_s3,
 )
-from tests.consts import (
-    TEST_BUCKET_NAME,
-    TEST_OBJECT_KEY,
-)
+from tests.consts import TEST_OBJECT_KEY
+from tests.fixtures.mocked_aws import TEST_BUCKET_NAME
 
 
 def test_object_exists_in_s3(mocked_aws: None):

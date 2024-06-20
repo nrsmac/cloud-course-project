@@ -9,7 +9,7 @@ authors = [{ name = "Noah Schill", email = "noahrschill@gmail.com" }]
 readme = "README.md"
 requires-python = ">=3.7"
 license = { text = "MIT" }
-dependencies = ["boto3", "fastapi"]
+dependencies = ["boto3", "fastapi", "pendulum"]
 classifiers = ["Programming Language :: Python :: 3"]
 keywords = ["one", "two"]
 
@@ -36,6 +36,7 @@ static-code-qa = [
     "flake8-docstrings",
     "Flake8-pyproject",
     "radon",
+    "rope",
 ]
 # Installing dev dependencies in your virtual env makes it so that during development VS Code can
 # - surface linting errors

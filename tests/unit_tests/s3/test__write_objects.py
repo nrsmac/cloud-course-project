@@ -1,7 +1,7 @@
 import boto3
 
 from files_api.s3.write_objects import upload_s3_object
-from tests.consts import TEST_BUCKET_NAME
+from tests.fixtures.mocked_aws import TEST_BUCKET_NAME
 
 
 # pylint: disable=unused-argument
