@@ -4,6 +4,7 @@ from typing import (
     Optional,
 )
 
+import pendulum
 from fastapi import (
     Depends,
     FastAPI,
@@ -12,7 +13,6 @@ from fastapi import (
     status,
 )
 from fastapi.responses import StreamingResponse
-import pendulum
 from pydantic import BaseModel
 
 from files_api.s3.delete_objects import delete_s3_object
@@ -116,10 +116,7 @@ async def list_files(
         for file in files
     ]
 
-    return ListFilesResponse(
-        files=file_metadata_objects,
-        next_page_token=next_page_token if next_page_token else None
-    )
+    return ListFilesResponse(files=file_metadata_objects, next_page_token=next_page_token if next_page_token else None)
 
 
 @APP.head("/files/{file_path:path}")
@@ -128,11 +125,11 @@ async def get_file_metadata(file_path: str, response: Response) -> Response:
 
     Note: by convention, HEAD requests MUST NOT return a body in the response.
     """
-    object = fetch_s3_object(bucket_name=S3_BUCKET_NAME, object_key=file_path)
+    s3_object = fetch_s3_object(bucket_name=S3_BUCKET_NAME, object_key=file_path)
 
-    response.headers["Content-Length"] = str(object["ContentLength"])
-    response.headers["Last-Modified"] = pendulum.instance(object["LastModified"]).to_rfc1123_string()
-    response.headers["Content-Type"] = object["ContentType"]
+    response.headers["Content-Length"] = str(s3_object["ContentLength"])
+    response.headers["Last-Modified"] = pendulum.instance(s3_object["LastModified"]).to_rfc1123_string()
+    response.headers["Content-Type"] = s3_object["ContentType"]
     response.status_code = status.HTTP_200_OK
 
     return response
@@ -141,9 +138,13 @@ async def get_file_metadata(file_path: str, response: Response) -> Response:
 @APP.get("/files/{file_path:path}")
 async def get_file(
     file_path: str,
-):
+) -> StreamingResponse:
     """Retrieve a file."""
-    ...
+    s3_object = fetch_s3_object(bucket_name=S3_BUCKET_NAME, object_key=file_path)
+    return StreamingResponse(
+        content=s3_object["Body"],
+        media_type=s3_object["ContentType"],
+    )
 
 
 @APP.delete("/files/{file_path:path}")

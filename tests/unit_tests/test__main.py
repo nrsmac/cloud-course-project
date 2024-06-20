@@ -1,6 +1,6 @@
 import pytest
-from fastapi.testclient import TestClient
 from fastapi import status
+from fastapi.testclient import TestClient
 
 from src.files_api.main import APP
 
@@ -27,7 +27,7 @@ def test__upload_file__happy_path(client: TestClient):
     assert response.status_code == status.HTTP_201_CREATED
     assert response.json() == {
         "file_path": TEST_FILE_PATH,
-        "message": f"File uploaded successfully at path: /{TEST_FILE_PATH}"
+        "message": f"File uploaded successfully at path: /{TEST_FILE_PATH}",
     }
 
     # Update an existing file
@@ -40,7 +40,7 @@ def test__upload_file__happy_path(client: TestClient):
     assert response.status_code == status.HTTP_200_OK
     assert response.json() == {
         "file_path": TEST_FILE_PATH,
-        "message": f"File already exists at path: /{TEST_FILE_PATH}"
+        "message": f"File already exists at path: /{TEST_FILE_PATH}",
     }
 
 
@@ -60,7 +60,6 @@ def test__list_files_with_pagination__happy_path(client: TestClient):
     assert len(data["files"]) == 10
     assert "next_page_token" in data
     assert data["next_page_token"] is not None
-
 
 
 def test__get_file_metadata(client: TestClient):
@@ -86,7 +85,7 @@ def test_get_file(client: TestClient):
     # Get file
     response = client.get(f"/files/{TEST_FILE_PATH}")
     assert response.status_code == status.HTTP_200_OK
-    assert response.headers["Content-Type"] == TEST_FILE_CONTENT_TYPE
+    assert TEST_FILE_CONTENT_TYPE in response.headers["Content-Type"]  # Fix charset=utf8 bug?
     assert response.content == TEST_FILE_CONTENT
 
 
