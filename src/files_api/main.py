@@ -39,6 +39,8 @@ APP = FastAPI()
 
 # read (cRud)
 class FileMetadata(BaseModel):
+    """Represents metadata of a file."""
+
     file_path: str
     last_modified: datetime
     size_bytes: int
@@ -46,6 +48,8 @@ class FileMetadata(BaseModel):
 
 # more pydantic models ...
 class PutFileResponse(BaseModel):
+    """Response schema for uploading a file."""
+
     file_path: str
     message: str
 
@@ -79,12 +83,16 @@ async def upload_file(file_path: str, file: UploadFile, response: Response) -> P
 
 
 class GetFilesQueryParams(BaseModel):
+    """Query parameters for listing files."""
+
     page_size: Optional[int] = 10
     directory: Optional[str] = ""
     page_token: Optional[str] = None
 
 
 class ListFilesResponse(BaseModel):
+    """Response schema for listing files."""
+
     files: List[FileMetadata]
     next_page_token: Optional[str]
 
@@ -121,7 +129,8 @@ async def list_files(
 
 @APP.head("/files/{file_path:path}")
 async def get_file_metadata(file_path: str, response: Response) -> Response:
-    """Retrieve file metadata.
+    """
+    Retrieve file metadata.
 
     Note: by convention, HEAD requests MUST NOT return a body in the response.
     """
@@ -152,9 +161,11 @@ async def delete_file(
     file_path: str,
     response: Response,
 ) -> Response:
-    """Delete a file.
+    """
+    Delete a file.
 
-    NOTE: DELETE requests MUST NOT return a body in the response."""
+    NOTE: DELETE requests MUST NOT return a body in the response.
+    """
     return
 
 
