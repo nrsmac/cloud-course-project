@@ -14,8 +14,8 @@ imap <Plug>(copilot-dismiss) <Cmd>call copilot#Dismiss()
 inoremap <C-C> 
 nnoremap  
 nnoremap <NL> <NL>
-nnoremap  
-nnoremap  
+nnoremap  
+nnoremap  
 nnoremap <silent>  :CtrlP
 nnoremap   za
 xmap gx <Plug>NetrwBrowseXVis
@@ -24,8 +24,8 @@ xnoremap <silent> <Plug>NetrwBrowseXVis :call netrw#BrowseXVis()
 nnoremap <silent> <Plug>NetrwBrowseX :call netrw#BrowseX(netrw#GX(),netrw#CheckIfRemote(netrw#GX()))
 nnoremap <silent> <C-P> :CtrlP
 nnoremap <C-H> 
-nnoremap <C-L> 
-nnoremap <C-K> 
+nnoremap <C-L> 
+nnoremap <C-K> 
 nnoremap <C-J> <NL>
 inoremap  
 let &cpo=s:cpo_save

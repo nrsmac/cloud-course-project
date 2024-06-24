@@ -1,4 +1,4 @@
-import pytest
+import pytest  # noqa
 from fastapi import status
 from fastapi.testclient import TestClient
 
@@ -12,7 +12,7 @@ TEST_FILE_CONTENT_TYPE = "text/plain"
 
 
 @pytest.fixture
-def client(mocked_aws) -> TestClient:  # pylint: disable=unused-argument
+def client(mocked_aws) -> TestClient:  # type: ignore # pylint: disable=unused-argument
     """Fixture for FastAPI test client."""
     app = create_app(s3_bucket_name=TEST_BUCKET_NAME)
     with TestClient(app) as client:
