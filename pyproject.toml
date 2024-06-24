@@ -9,7 +9,7 @@ authors = [{ name = "Noah Schill", email = "noahrschill@gmail.com" }]
 readme = "README.md"
 requires-python = ">=3.7"
 license = { text = "MIT" }
-dependencies = ["boto3", "fastapi", "pendulum"]
+dependencies = ["boto3", "fastapi", "pendulum", "pydantic-settings"]
 classifiers = ["Programming Language :: Python :: 3"]
 keywords = ["one", "two"]
 
