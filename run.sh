@@ -21,7 +21,7 @@ function install {
 }
 # start the FastAPI app, enabling hot reload on save (assuming files_api packages is installed)
 function run {
-    AWS_PROFILE=mlops-club uvicorn src.files_api.main:APP --reload
+    AWS_PROFILE=mlops-club S3_BUCKET_NAME="some-bucket" uvicorn src.files_api.main:create_app --reload --factory
 }
 
 # start the FastAPI app, pointed at a mocked aws endpoint
@@ -36,15 +36,16 @@ function run-mock {
     export AWS_ENDPOINT_URL="http://localhost:5000"
     export AWS_SECRET_ACCESS_KEY="mock"
     export AWS_ACCESS_KEY_ID="mock"
+    export S3_BUCKET_NAME="some-bucket"
 
     # create a bucket called "some-bucket" using the mocked aws server
-    aws s3 mb s3://some-bucket
+    aws s3 mb "s3://$S3_BUCKET_NAME"
 
     # Trap EXIT signal to kill the moto.server process when uvicorn stops
     trap 'kill $MOTO_PID' EXIT
 
     # Set AWS endpoint URL and start FastAPI app with uvicorn in the foreground
-    uvicorn src.files_api.main:APP --reload
+    uvicorn src.files_api.main:create_app --reload --factory
 
     # Wait for the moto.server process to finish (this is optional if you want to keep it running)
     wait $MOTO_PID
@@ -52,7 +53,8 @@ function run-mock {
 
 # start the FastAPI app, enabling hot reload on save (assuming files_api packages is not installed)
 function run-py {
-    AWS_PROFILE=cloud-course  PYTHONPATH="${THIS_DIR}/src" uvicorn files_api.main:APP --reload
+    AWS_PROFILE=cloud-course S3_BUCKET_NAME="some-bucket" PYTHONPATH="${THIS_DIR}/src" \
+    uvicorn files_api.main:create_app --reload --factory
 }
 
 # run linting, formatting, and other static code quality tools
@@ -84,7 +86,7 @@ function run-tests {
     PYTEST_EXIT_STATUS=0
 
     # clean the test-reports dir
-    rm -rf "$THIS_DIR/test-reports" || mkdir "$THIS_DIR/test-reports"
+    rm -rf "$THIS_DIR/test-reports" || mkdir -p "$THIS_DIR/test-reports"
 
     # execute the tests, calculate coverage, and generate coverage reports in the test-reports dir
     python -m pytest ${@:-"$THIS_DIR/tests/"} \
