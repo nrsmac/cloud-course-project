@@ -10,15 +10,15 @@ TEST_FILE_CONTENT = b"Hello, World!"
 TEST_FILE_CONTENT_TYPE = "text/plain"
 
 
-# Fixture for FastAPI test client
 @pytest.fixture
 def client(mocked_aws) -> TestClient:  # pylint: disable=unused-argument
+    """Fixture for FastAPI test client."""
     with TestClient(APP) as client:
         yield client
 
 
 def test__upload_file__happy_path(client: TestClient):
-    # Create a file
+    """Asserts that a file can be uploaded successfully."""
     response = client.put(
         f"/files/{TEST_FILE_PATH}",
         files={"file": (TEST_FILE_PATH, TEST_FILE_CONTENT, TEST_FILE_CONTENT_TYPE)},
@@ -45,7 +45,7 @@ def test__upload_file__happy_path(client: TestClient):
 
 
 def test__list_files_with_pagination__happy_path(client: TestClient):
-    # Create a file under myfolder/
+    """Asserts that files can be listed with pagination."""
     for i in range(1, 15):
         test_file_path = f"files/file{i}.txt"
         response = client.put(
@@ -63,7 +63,7 @@ def test__list_files_with_pagination__happy_path(client: TestClient):
 
 
 def test__get_file_metadata(client: TestClient):
-    # Create a file
+    """Asserts that file metadata can be retrieved."""
     response = client.put(
         f"/files/{TEST_FILE_PATH}",
         files={"file": (TEST_FILE_PATH, TEST_FILE_CONTENT, TEST_FILE_CONTENT_TYPE)},
@@ -77,6 +77,7 @@ def test__get_file_metadata(client: TestClient):
 
 
 def test_get_file(client: TestClient):
+    """Asserts that a file can be retrieved."""
     # Create a file
     client.put(
         f"/files/{TEST_FILE_PATH}",
