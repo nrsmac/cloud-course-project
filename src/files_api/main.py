@@ -166,7 +166,9 @@ async def delete_file(
 
     NOTE: DELETE requests MUST NOT return a body in the response.
     """
-    return
+    delete_s3_object(bucket_name=S3_BUCKET_NAME, object_key=file_path)
+    response.status_code = status.HTTP_200_OK
+    return response
 
 
 if __name__ == "__main__":

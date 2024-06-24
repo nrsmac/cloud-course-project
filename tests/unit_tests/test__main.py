@@ -62,7 +62,12 @@ def test__list_files_with_pagination__happy_path(client: TestClient):
     assert data["next_page_token"] is not None
 
 
-def test__get_file_metadata(client: TestClient):
+def test__list_files_with_pagination_and_page_token__happy_path(client: TestClient):
+    """Asserts that files can be listed with pagination and page token."""
+    ...
+
+
+def test__get_file_metadata__happy_path(client: TestClient):
     """Asserts that file metadata can be retrieved."""
     response = client.put(
         f"/files/{TEST_FILE_PATH}",
@@ -76,7 +81,7 @@ def test__get_file_metadata(client: TestClient):
     assert "Last-Modified" in response.headers
 
 
-def test_get_file(client: TestClient):
+def test__get_file___happy_path(client: TestClient):
     """Asserts that a file can be retrieved."""
     # Create a file
     client.put(
@@ -90,4 +95,15 @@ def test_get_file(client: TestClient):
     assert response.content == TEST_FILE_CONTENT
 
 
-def test_delete_file(client: TestClient): ...
+def test__delete_file__happy_path(client: TestClient):
+    """Asserts that a file can be deleted and proper response is returned."""
+    client.put(
+        f"/files/{TEST_FILE_PATH}",
+        files={"file": (TEST_FILE_PATH, TEST_FILE_CONTENT, TEST_FILE_CONTENT_TYPE)},
+    )
+
+    # Delete file
+    response = client.delete(f"/files/{TEST_FILE_PATH}")
+    assert response.status_code == status.HTTP_200_OK
+    # Assert empty response body
+    assert response.content == b""
