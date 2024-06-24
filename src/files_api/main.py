@@ -103,7 +103,7 @@ async def list_files(
     else:
         files, next_page_token = fetch_s3_objects_metadata(
             bucket_name=S3_BUCKET_NAME,
-            prefix=query_params.directory,
+            prefix=query_params.directory if query_params.directory else "",
             max_keys=query_params.page_size,
         )
 
