@@ -2,24 +2,11 @@ import pytest  # noqa
 from fastapi import status
 from fastapi.testclient import TestClient
 
-from files_api import s3
-from files_api.main import create_app
-from files_api.settings import Settings
-from tests.consts import TEST_BUCKET_NAME
 
 # Constants
 TEST_FILE_PATH = "test_file.txt"
 TEST_FILE_CONTENT = b"Hello, World!"
 TEST_FILE_CONTENT_TYPE = "text/plain"
-
-
-@pytest.fixture
-def client(mocked_aws) -> TestClient:  # type: ignore # pylint: disable=unused-argument
-    """Fixture for FastAPI test client."""
-    settings: Settings = Settings(s3_bucket_name=TEST_BUCKET_NAME)
-    app = create_app(settings)
-    with TestClient(app) as client:
-        yield client
 
 
 def test__upload_file__happy_path(client: TestClient):
@@ -85,6 +72,12 @@ def test__get_file_metadata__happy_path(client: TestClient):
     assert response.headers["Content-Length"] == str(len(TEST_FILE_CONTENT))
     assert "Last-Modified" in response.headers
 
+    # TODO would be cool to refactor this too?
+    # Rasies 404 for non-existent file
+    response = client.head("/files/non_existent_file.txt")
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+
+
 
 def test__get_file___happy_path(client: TestClient):
     """Asserts that a file can be retrieved."""
@@ -112,3 +105,8 @@ def test__delete_file__happy_path(client: TestClient):
     assert response.status_code == status.HTTP_200_OK
     # Assert empty response body
     assert response.content == b""
+
+    # Rasies 404 for non-existent file
+    response = client.delete("/files/non_existent_file.txt")
+    assert response.status_code == status.HTTP_404_NOT_FOUND
+    assert response.json() == {"detail": "File not found"}

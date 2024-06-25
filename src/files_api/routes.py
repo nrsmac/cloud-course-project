@@ -6,6 +6,7 @@ from fastapi import (
     Response,
     UploadFile,
     status,
+    HTTPException,
 )
 from fastapi.responses import StreamingResponse
 
@@ -94,6 +95,11 @@ async def get_file_metadata(request: Request, file_path: str, response: Response
     Note: by convention, HEAD requests MUST NOT return a body in the response.
     """
     settings: Settings = request.app.state.settings
+
+    object_exists = object_exists_in_s3(bucket_name=settings.s3_bucket_name, object_key=file_path)
+    if not object_exists:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File not found")
+
     s3_object = fetch_s3_object(bucket_name=settings.s3_bucket_name, object_key=file_path)
 
     response.headers["Content-Length"] = str(s3_object["ContentLength"])
@@ -111,10 +117,15 @@ async def get_file(
 ) -> StreamingResponse:
     """Retrieve a file."""
     settings: Settings = request.app.state.settings
-    s3_object = fetch_s3_object(bucket_name=settings.s3_bucket_name, object_key=file_path)
+
+    object_exists = object_exists_in_s3(bucket_name=settings.s3_bucket_name, object_key=file_path)
+    if not object_exists:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File not found")
+
+    get_object_response = fetch_s3_object(bucket_name=settings.s3_bucket_name, object_key=file_path)
     return StreamingResponse(
-        content=s3_object["Body"],
-        media_type=s3_object["ContentType"],
+        content=get_object_response["Body"],
+        media_type=get_object_response["ContentType"],
     )
 
 
@@ -130,6 +141,11 @@ async def delete_file(
     NOTE: DELETE requests MUST NOT return a body in the response.
     """
     settings: Settings = request.app.state.settings
+
+    # TODO how can I refactor this?
+    object_exists = object_exists_in_s3(bucket_name=settings.s3_bucket_name, object_key=file_path)
+    if not object_exists:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File not found")
 
     delete_s3_object(bucket_name=settings.s3_bucket_name, object_key=file_path)
     response.status_code = status.HTTP_200_OK
