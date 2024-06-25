@@ -94,6 +94,7 @@ function run-tests {
         --cov-report html \
         --cov-report term \
         --cov-report xml \
+	--verbose \
         --junit-xml "$THIS_DIR/test-reports/report.xml" \
         --cov-fail-under "$MINIMUM_TEST_COVERAGE_PERCENT" || ((PYTEST_EXIT_STATUS+=$?))
     mv coverage.xml "$THIS_DIR/test-reports/" || true
