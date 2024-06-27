@@ -110,11 +110,8 @@ def fetch_s3_objects_metadata(
         2. Next continuation token if there are more pages, otherwise None.
     """
     s3_client = s3_client or boto3.client("s3")
-    response = s3_client.list_objects_v2(
-        Bucket=bucket_name,
-        Prefix=prefix,
-        MaxKeys=max_keys or DEFAULT_MAX_KEYS,
-    )
+
+    response = s3_client.list_objects_v2(Bucket=bucket_name, Prefix=prefix or "", MaxKeys=max_keys)
     files: list["ObjectTypeDef"] = response.get("Contents", [])
     next_page_token: str | None = response.get("NextContinuationToken")
 

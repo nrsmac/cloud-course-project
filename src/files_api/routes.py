@@ -2,11 +2,11 @@ import pendulum
 from fastapi import (
     APIRouter,
     Depends,
+    HTTPException,
     Request,
     Response,
     UploadFile,
     status,
-    HTTPException,
 )
 from fastapi.responses import StreamingResponse
 
@@ -21,7 +21,7 @@ from files_api.s3.write_objects import upload_s3_object
 from files_api.schemas import (
     FileMetadata,
     GetFilesQueryParams,
-    ListFilesResponse,
+    GetFilesResponse,
     PutFileResponse,
 )
 from files_api.settings import Settings
@@ -59,7 +59,7 @@ async def upload_file(request: Request, file_path: str, file: UploadFile, respon
 async def list_files(
     request: Request,
     query_params: GetFilesQueryParams = Depends(),
-) -> ListFilesResponse:
+) -> GetFilesResponse:
     """List files with pagination."""
     settings: Settings = request.app.state.settings
     if query_params.page_token:
@@ -71,20 +71,19 @@ async def list_files(
     else:
         files, next_page_token = fetch_s3_objects_metadata(
             bucket_name=settings.s3_bucket_name,
-            prefix=query_params.directory if query_params.directory else "",
+            prefix=query_params.directory,
             max_keys=query_params.page_size,
         )
 
-    file_metadata_objects = [
+    file_metadata_objs = [
         FileMetadata(
-            file_path=f"{file['Key']}",
-            last_modified=file["LastModified"],
-            size_bytes=file["Size"],
+            file_path=f"{item['Key']}",
+            last_modified=item["LastModified"],
+            size_bytes=item["Size"],
         )
-        for file in files
+        for item in files
     ]
-
-    return ListFilesResponse(files=file_metadata_objects, next_page_token=next_page_token if next_page_token else None)
+    return GetFilesResponse(files=file_metadata_objs, next_page_token=next_page_token if next_page_token else None)
 
 
 @ROUTER.head("/files/{file_path:path}")
@@ -142,7 +141,6 @@ async def delete_file(
     """
     settings: Settings = request.app.state.settings
 
-    # TODO how can I refactor this?
     object_exists = object_exists_in_s3(bucket_name=settings.s3_bucket_name, object_key=file_path)
     if not object_exists:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File not found")

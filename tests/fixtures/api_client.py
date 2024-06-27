@@ -1,9 +1,9 @@
 import pytest
-from files_api.settings import Settings
 from fastapi.testclient import TestClient
-from files_api.main import create_app
-from tests.consts import TEST_BUCKET_NAME
 
+from files_api.main import create_app
+from files_api.settings import Settings
+from tests.consts import TEST_BUCKET_NAME
 
 
 @pytest.fixture

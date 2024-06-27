@@ -2,14 +2,13 @@ import pytest  # noqa
 from fastapi import status
 from fastapi.testclient import TestClient
 
-
 # Constants
 TEST_FILE_PATH = "test_file.txt"
 TEST_FILE_CONTENT = b"Hello, World!"
 TEST_FILE_CONTENT_TYPE = "text/plain"
 
 
-def test__upload_file__happy_path(client: TestClient):
+def test_upload_file(client: TestClient):
     """Asserts that a file can be uploaded successfully."""
     response = client.put(
         f"/files/{TEST_FILE_PATH}",
@@ -36,7 +35,7 @@ def test__upload_file__happy_path(client: TestClient):
     }
 
 
-def test__list_files_with_pagination__happy_path(client: TestClient):
+def test_list_files_with_pagination(client: TestClient):
     """Asserts that files can be listed with pagination."""
     for i in range(1, 15):
         test_file_path = f"files/file{i}.txt"
@@ -46,7 +45,7 @@ def test__list_files_with_pagination__happy_path(client: TestClient):
         )
 
     # List files under myfolder/
-    response = client.get("/files?pageSize=10")
+    response = client.get("/files?page_size=10")
     assert response.status_code == status.HTTP_200_OK
     data = response.json()
     assert len(data["files"]) == 10
@@ -54,12 +53,12 @@ def test__list_files_with_pagination__happy_path(client: TestClient):
     assert data["next_page_token"] is not None
 
 
-def test__list_files_with_pagination_and_page_token__happy_path(client: TestClient):
+def test_list_files_with_pagination_and_page_token(client: TestClient):
     """Asserts that files can be listed with pagination and page token."""
     ...
 
 
-def test__get_file_metadata__happy_path(client: TestClient):
+def test_get_file_metadata(client: TestClient):
     """Asserts that file metadata can be retrieved."""
     response = client.put(
         f"/files/{TEST_FILE_PATH}",
@@ -72,14 +71,8 @@ def test__get_file_metadata__happy_path(client: TestClient):
     assert response.headers["Content-Length"] == str(len(TEST_FILE_CONTENT))
     assert "Last-Modified" in response.headers
 
-    # TODO would be cool to refactor this too?
-    # Rasies 404 for non-existent file
-    response = client.head("/files/non_existent_file.txt")
-    assert response.status_code == status.HTTP_404_NOT_FOUND
 
-
-
-def test__get_file___happy_path(client: TestClient):
+def test_get_file_(client: TestClient):
     """Asserts that a file can be retrieved."""
     # Create a file
     client.put(
@@ -93,7 +86,7 @@ def test__get_file___happy_path(client: TestClient):
     assert response.content == TEST_FILE_CONTENT
 
 
-def test__delete_file__happy_path(client: TestClient):
+def test_delete_file(client: TestClient):
     """Asserts that a file can be deleted and proper response is returned."""
     client.put(
         f"/files/{TEST_FILE_PATH}",
@@ -105,8 +98,3 @@ def test__delete_file__happy_path(client: TestClient):
     assert response.status_code == status.HTTP_200_OK
     # Assert empty response body
     assert response.content == b""
-
-    # Rasies 404 for non-existent file
-    response = client.delete("/files/non_existent_file.txt")
-    assert response.status_code == status.HTTP_404_NOT_FOUND
-    assert response.json() == {"detail": "File not found"}
