@@ -3,7 +3,6 @@ from datetime import datetime
 from typing import (
     List,
     Optional,
-    Self,
 )
 
 from pydantic import (
@@ -11,6 +10,7 @@ from pydantic import (
     Field,
     model_validator,
 )
+from typing_extensions import Self
 
 DEFAULT_GET_FILES_PAGE_SIZE = 10
 DEFAULT_GET_FILES_MIN_PAGE_SIZE = 10
@@ -47,7 +47,7 @@ class GetFilesResponse(BaseModel):
 
 class GetFilesQueryParams(BaseModel):
     page_size: int = Field(
-        page_size=DEFAULT_GET_FILES_PAGE_SIZE,
+        default=DEFAULT_GET_FILES_PAGE_SIZE,
         ge=DEFAULT_GET_FILES_MIN_PAGE_SIZE,
         le=DEFAULT_GET_FILES_MAX_PAGE_SIZE,
     )
