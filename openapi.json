@@ -163,11 +163,11 @@
         }
       }
     },
-    "/files": {
+    "/v1/files": {
       "get": {
         "summary": "List Files",
         "description": "List files with pagination.",
-        "operationId": "list_files_files_get",
+        "operationId": "list_files_v1_files_get",
         "parameters": [
           {
             "name": "page_size",

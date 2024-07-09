@@ -1,4 +1,4 @@
-"""Main module for the files API."""
+"""Main module for files API."""
 
 import pydantic
 from fastapi import FastAPI
