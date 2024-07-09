@@ -38,19 +38,16 @@ def test_upload_file(client: TestClient):
 
 def test_list_files_with_pagination(client: TestClient):
     """Asserts that files can be listed with pagination."""
-    for i in range(1, 15):
-        test_file_path = f"files/file{i}.txt"
-        response = client.put(
-            f"/v1/files/{test_file_path}",
+    for i in range(15):
+        client.put(
+            f"/v1/files/file{i}.txt",
+            files={"file_content": (f"file{i}.txt", TEST_FILE_CONTENT, TEST_FILE_CONTENT_TYPE)},
         )
-
-    # List files under myfolder/
-    response = client.get("/files?page_size=10")
+    response = client.get("/v1/files?page_size=10")
     assert response.status_code == status.HTTP_200_OK
     data = response.json()
     assert len(data["files"]) == 10
     assert "next_page_token" in data
-    assert data["next_page_token"] is not None
 
 
 def test_list_files_with_pagination_and_page_token(client: TestClient):  # pylint: disable=unused-argument

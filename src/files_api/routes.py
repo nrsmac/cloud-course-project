@@ -1,4 +1,5 @@
 """API routes for the files API."""
+
 from fastapi import (
     APIRouter,
     Depends,
@@ -57,7 +58,7 @@ async def upload_file(
     return PutFileResponse(file_path=file_path, message=response_message)
 
 
-@ROUTER.get("/files")
+@ROUTER.get("/v1/files")
 async def list_files(
     request: Request,
     query_params: GetFilesQueryParams = Depends(),
