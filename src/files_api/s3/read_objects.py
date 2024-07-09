@@ -32,10 +32,10 @@ def object_exists_in_s3(bucket_name: str, object_key: str, s3_client: Optional["
     try:
         s3_client.head_object(Bucket=bucket_name, Key=object_key)
         return True
-    except s3_client.exceptions.ClientError as e:
-        if e.response["Error"]["Code"] == "404":
+    except s3_client.exceptions.ClientError as error:
+        if error.response["Error"]["Code"] == "404":
             return False
-        raise e  # pragma: no cover
+        raise error  # pragma: no cover
 
 
 def fetch_s3_object(

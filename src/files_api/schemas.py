@@ -1,3 +1,5 @@
+"""Pydantic schemas for the files API."""
+
 import re
 from datetime import datetime
 from typing import (
@@ -19,7 +21,7 @@ DEFAULT_GET_FILES_DIRECTORY = ""
 
 
 def is_valid_path(value: str) -> bool:
-    """Validates minimum and maximum length and regex of a path"""
+    """Validate minimum and maximum length and regex of a path."""
     valid_path_patern = r"^([/a-zA-Z0-9_.-])+(/[a-zA-Z0-9_.-]+)*$"
     if len(value) < 1 or len(value) > 1024 or not re.match(valid_path_patern, value):
         return False
@@ -27,15 +29,18 @@ def is_valid_path(value: str) -> bool:
 
 
 class FileMetadata(BaseModel):
+    """Schema for file metadata."""
+
     file_path: str
     last_modified: datetime
     size_bytes: int
 
-    # @model_validator(mode="after")
-    # def check_for_valid_path(self) -> Self:
-    #     if not is_valid_path(self.file_path):
-    #         raise ValueError("Invalid file path")
-    #     return self
+    @model_validator(mode="after")
+    def check_for_valid_path(self) -> Self:
+        """Validate minimum and maximum length and regex of a path."""
+        if not is_valid_path(self.file_path):
+            raise ValueError("Invalid file path")
+        return self
 
 
 class GetFilesResponse(BaseModel):
@@ -46,6 +51,8 @@ class GetFilesResponse(BaseModel):
 
 
 class GetFilesQueryParams(BaseModel):
+    """Query parameters schema for listing files."""
+
     page_size: int = Field(
         default=DEFAULT_GET_FILES_PAGE_SIZE,
         ge=DEFAULT_GET_FILES_MIN_PAGE_SIZE,
@@ -56,6 +63,7 @@ class GetFilesQueryParams(BaseModel):
 
     @model_validator(mode="after")
     def check_page_token_is_mutually_exclusive_with_page_size_and_directory(self) -> Self:
+        """Validate page_token is mutually exclusive with page_size and directory."""
         if self.page_token:
             get_files_query_params: dict = self.model_dump(exclude_unset=True)
             page_size_set = "page_size" in get_files_query_params.keys()
@@ -79,6 +87,7 @@ class PutFileResponse(BaseModel):
 
     @model_validator(mode="after")
     def check_for_valid_path(self) -> Self:
+        """Validate minimum and maximum length and regex of a path."""
         if not is_valid_path(self.file_path):
             raise ValueError("Invalid file path")
         return self

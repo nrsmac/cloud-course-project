@@ -1,4 +1,4 @@
-import pendulum
+"""API routes for the files API."""
 from fastapi import (
     APIRouter,
     Depends,
@@ -29,8 +29,10 @@ from files_api.settings import Settings
 ROUTER = APIRouter()
 
 
-@ROUTER.put("/files/{file_path:path}")
-async def upload_file(request: Request, file_path: str, file: UploadFile, response: Response) -> PutFileResponse:
+@ROUTER.put("/v1/files/{file_path:path}")
+async def upload_file(
+    request: Request, file_path: str, file_content: UploadFile, response: Response
+) -> PutFileResponse:
     """Upload a file."""
     settings: Settings = request.app.state.settings
     object_already_exists = object_exists_in_s3(
@@ -44,13 +46,13 @@ async def upload_file(request: Request, file_path: str, file: UploadFile, respon
         response_message = f"File uploaded successfully at path: /{file_path}"
         response.status_code = status.HTTP_201_CREATED
 
-    file_contents: bytes = await file.read()
+    file_contents: bytes = await file_content.read()
 
     upload_s3_object(
         bucket_name=settings.s3_bucket_name,
         object_key=file_path,
         file_content=file_contents,
-        content_type=file.content_type,
+        content_type=file_content.content_type,
     )
     return PutFileResponse(file_path=file_path, message=response_message)
 
@@ -86,7 +88,7 @@ async def list_files(
     return GetFilesResponse(files=file_metadata_objs, next_page_token=next_page_token if next_page_token else None)
 
 
-@ROUTER.head("/files/{file_path:path}")
+@ROUTER.head("/v1/files/{file_path:path}")
 async def get_file_metadata(request: Request, file_path: str, response: Response) -> Response:
     """
     Retrieve file metadata.
@@ -99,17 +101,15 @@ async def get_file_metadata(request: Request, file_path: str, response: Response
     if not object_exists:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="File not found")
 
-    s3_object = fetch_s3_object(bucket_name=settings.s3_bucket_name, object_key=file_path)
-
-    response.headers["Content-Length"] = str(s3_object["ContentLength"])
-    response.headers["Last-Modified"] = pendulum.instance(s3_object["LastModified"]).to_rfc1123_string()
-    response.headers["Content-Type"] = s3_object["ContentType"]
+    get_object_response = fetch_s3_object(settings.s3_bucket_name, object_key=file_path)
+    response.headers["Content-Type"] = get_object_response["ContentType"]
+    response.headers["Content-Length"] = str(get_object_response["ContentLength"])
+    response.headers["Last-Modified"] = get_object_response["LastModified"].strftime("%a, %d %b %Y %H:%M:%S GMT")
     response.status_code = status.HTTP_200_OK
-
     return response
 
 
-@ROUTER.get("/files/{file_path:path}")
+@ROUTER.get("/v1/files/{file_path:path}")
 async def get_file(
     request: Request,
     file_path: str,
@@ -128,7 +128,7 @@ async def get_file(
     )
 
 
-@ROUTER.delete("/files/{file_path:path}")
+@ROUTER.delete("/v1/files/{file_path:path}")
 async def delete_file(
     request: Request,
     file_path: str,

@@ -1,3 +1,5 @@
+"""Fixtures for mocking AWS services using moto."""
+
 import os
 
 import boto3

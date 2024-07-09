@@ -16,14 +16,9 @@ def test_delete_existing_s3_object(mocked_aws: None):
     """Assert that `delete_s3_object` deletes an object from an S3 bucket."""
     boto3.client("s3")
     object_key = TEST_OBJECT_KEY
-    file_content = b"Hello, World!"
-    content_type = "text/plain"
 
     upload_s3_object(
-        bucket_name=TEST_BUCKET_NAME,
-        object_key=object_key,
-        file_content=file_content,
-        content_type=content_type,
+        bucket_name=TEST_BUCKET_NAME, object_key=object_key, file_content=b"Hello, World!", content_type="text/plain"
     )
 
     assert object_exists_in_s3(TEST_BUCKET_NAME, object_key)

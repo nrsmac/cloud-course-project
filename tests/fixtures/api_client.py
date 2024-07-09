@@ -1,3 +1,5 @@
+"""API client fixture for FastAPI tests."""
+
 import pytest
 from fastapi.testclient import TestClient
 

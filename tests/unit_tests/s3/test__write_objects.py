@@ -1,3 +1,5 @@
+"""Tests for the `write_objects` module in the `s3` package."""
+
 import boto3
 
 from files_api.s3.write_objects import upload_s3_object

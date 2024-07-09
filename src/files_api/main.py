@@ -1,3 +1,5 @@
+"""Main module for the files API."""
+
 import pydantic
 from fastapi import FastAPI
 
@@ -11,7 +13,6 @@ from files_api.settings import Settings
 
 def create_app(settings: Settings | None = None) -> FastAPI:
     """Create a FastAPI application with the specified S3 bucket name."""
-
     settings = settings or Settings()
 
     app = FastAPI()

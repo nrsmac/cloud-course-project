@@ -1,3 +1,5 @@
+"""Settings for Files API."""
+
 from pydantic import Field
 from pydantic_settings import (
     BaseSettings,
@@ -6,7 +8,8 @@ from pydantic_settings import (
 
 
 class Settings(BaseSettings):
-    """Settings for Files API.
+    """
+    Settings for Files API.
 
     Using pydantic-settings to load settings from environment variables.
     Pydantic BaseSettings Docs: https://docs.pydantic.dev/latest/concepts/pydantic_settings/

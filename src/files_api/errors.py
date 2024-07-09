@@ -1,13 +1,12 @@
+"""Error handling for files API."""
+
 # @app.exception_handler(RequestValidationError)
-import boto3
 import pydantic
 from fastapi import (
     Request,
     status,
 )
 from fastapi.responses import JSONResponse
-
-from tests.consts import TEST_BUCKET_NAME
 
 
 # fastapi docs on middlewares: https://fastapi.tiangolo.com/tutorial/middleware/
@@ -23,7 +22,10 @@ async def handle_broad_exceptions(request: Request, call_next):
 
 
 # fastapi docs on error handlers: https://fastapi.tiangolo.com/tutorial/handling-errors/
-async def handle_pydantic_validation_errors(request: Request, exc: pydantic.ValidationError) -> JSONResponse:
+async def handle_pydantic_validation_errors(
+    request: Request, exc: pydantic.ValidationError  # pylint: disable=unused-argument
+) -> JSONResponse:
+    """Handle pydantic validation errors and return a 422 response."""
     errors = exc.errors()
     return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
