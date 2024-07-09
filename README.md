@@ -1,4 +1,5 @@
 # cloud-course-project
+![badge](https://github.com/nrsmac/cloud-course-project/actions/workflows/build-test-publish.yaml/badge.svg)
 
 ## Quick start
 
