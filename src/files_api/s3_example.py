@@ -1,3 +1,5 @@
+"""Example of using boto3-stubs[s3] package with mypy."""
+
 import boto3
 
 try:
