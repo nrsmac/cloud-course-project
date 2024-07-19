@@ -13,6 +13,9 @@ run-mock:
 build:
 	bash run.sh build
 
+generate-client-library:
+	bash run.sh generate-client-library
+
 clean:
 	bash run.sh clean
 
