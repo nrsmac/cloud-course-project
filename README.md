@@ -1,7 +1,7 @@
 # cloud-course-project
 ![badge](https://github.com/nrsmac/cloud-course-project/actions/workflows/build-test-publish.yaml/badge.svg)
 
-A project to demonstrate building high-quality APIs and SDKs with FastAPI
+A project to demonstrate building high-quality APIs and SDKs with FastAPI.
 
 Features:
 - OpenAPI schema generation and diffing
@@ -22,8 +22,15 @@ You will need the following installed on your machine to develop on this codebas
 # clone the repo
 git clone https://github.com/nrsmac/s3_files_api.git
 
+# Create a virtual env
+python3.11 -m venv venv
+source venv/bin/activate
+
 # install the dev dependencies
 make install
+
+# Generate the SDK
+make generate-client-library
 
 # run the tests
 make test
