@@ -13,6 +13,7 @@ from files_api.settings import Settings
 
 
 def custom_generate_unique_id(route: APIRoute):
+    """Generate a unique ID for a FastAPI route."""
     return f"{route.tags[0]}-{route.name}"
 
 

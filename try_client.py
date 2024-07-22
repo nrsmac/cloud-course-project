@@ -19,6 +19,7 @@ configuration = files_api_sdk.Configuration(host="http://localhost:8000")
 
 
 def main():
+    """Test the FastAPI app."""
     # Enter a context with an instance of the API client
     with files_api_sdk.ApiClient(configuration) as api_client:
         # Create an instance of the API class

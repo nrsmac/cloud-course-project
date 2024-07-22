@@ -1,6 +1,5 @@
 """API routes for the files API."""
 
-import re
 
 from fastapi import (
     APIRouter,
