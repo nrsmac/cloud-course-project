@@ -32,10 +32,17 @@ def object_exists_in_s3(bucket_name: str, object_key: str, s3_client: Optional["
     try:
         s3_client.head_object(Bucket=bucket_name, Key=object_key)
         return True
+<<<<<<< Updated upstream
     except s3_client.exceptions.ClientError as error:
         if error.response["Error"]["Code"] == "404":
             return False
         raise error  # pragma: no cover
+=======
+    except s3_client.exceptions.ClientError as e:
+        if e.response["Error"]["Code"] == "404":
+            return False
+        raise e  # pragma: no cover
+>>>>>>> Stashed changes
 
 
 def fetch_s3_object(
@@ -110,8 +117,16 @@ def fetch_s3_objects_metadata(
         2. Next continuation token if there are more pages, otherwise None.
     """
     s3_client = s3_client or boto3.client("s3")
+<<<<<<< Updated upstream
 
     response = s3_client.list_objects_v2(Bucket=bucket_name, Prefix=prefix or "", MaxKeys=max_keys)
+=======
+    response = s3_client.list_objects_v2(
+        Bucket=bucket_name,
+        Prefix=prefix,
+        MaxKeys=max_keys or DEFAULT_MAX_KEYS,
+    )
+>>>>>>> Stashed changes
     files: list["ObjectTypeDef"] = response.get("Contents", [])
     next_page_token: str | None = response.get("NextContinuationToken")
 

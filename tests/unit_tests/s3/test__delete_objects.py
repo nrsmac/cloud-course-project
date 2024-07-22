@@ -13,12 +13,25 @@ from tests.consts import (
 
 # pylint: disable=unused-argument
 def test_delete_existing_s3_object(mocked_aws: None):
+<<<<<<< Updated upstream
     """Assert that `delete_s3_object` deletes an object from an S3 bucket."""
     boto3.client("s3")
     object_key = TEST_OBJECT_KEY
 
     upload_s3_object(
         bucket_name=TEST_BUCKET_NAME, object_key=object_key, file_content=b"Hello, World!", content_type="text/plain"
+=======
+    boto3.client("s3")
+    object_key = TEST_OBJECT_KEY
+    file_content = b"Hello, World!"
+    content_type = "text/plain"
+
+    upload_s3_object(
+        bucket_name=TEST_BUCKET_NAME,
+        object_key=object_key,
+        file_content=file_content,
+        content_type=content_type,
+>>>>>>> Stashed changes
     )
 
     assert object_exists_in_s3(TEST_BUCKET_NAME, object_key)
@@ -28,8 +41,12 @@ def test_delete_existing_s3_object(mocked_aws: None):
 
 # pylint: disable=unused-argument
 def test_delete_nonexistent_s3_object(mocked_aws: None):
+<<<<<<< Updated upstream
     """Assert that `delete_s3_object` does not raise an error when deleting a nonexistent object."""
     object_key = "test.txt"
+=======
+    object_key = TEST_OBJECT_KEY
+>>>>>>> Stashed changes
     assert not object_exists_in_s3(TEST_BUCKET_NAME, object_key)
     delete_s3_object(TEST_BUCKET_NAME, object_key)
     assert not object_exists_in_s3(TEST_BUCKET_NAME, object_key)
