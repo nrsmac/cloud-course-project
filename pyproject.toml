@@ -3,8 +3,8 @@
 ############################
 
 [project]
-name = "cloud-course-project"
-description = "My package description"
+name = "s3-files-api"
+description = "API for accessing S3"
 authors = [{ name = "Noah Schill", email = "noahrschill@gmail.com" }]
 readme = "README.md"
 requires-python = ">=3.7"

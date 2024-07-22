@@ -8,7 +8,7 @@ try:
 except ImportError:
     print("boto3-stubs[s3] is not installed")
 
-BUCKET_NAME = "nrsmac-cloud-course-bucket"
+BUCKET_NAME = "some-bucket"
 
 session = boto3.Session()
 s3_client: "S3Client" = session.client("s3")

@@ -8,7 +8,7 @@ certifi
 cfgv
 charset-normalizer
 click
-cloud-course-project
+s3-files-api
 colorama
 coverage
 dill

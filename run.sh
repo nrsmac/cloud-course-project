@@ -40,7 +40,7 @@ function install-generated-sdk {
 
 # start the FastAPI app, enabling hot reload on save (assuming files_api packages is installed)
 function run {
-    AWS_PROFILE=mlops-club S3_BUCKET_NAME="cloud-course-bucket-553e" uvicorn src.files_api.main:create_app --reload --factory
+    AWS_PROFILE=mlops-club S3_BUCKET_NAME="some-bucket" uvicorn src.files_api.main:create_app --reload --factory
 }
 
 # start the FastAPI app, pointed at a mocked aws endpoint

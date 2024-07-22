@@ -1,5 +1,5 @@
-# cloud-course-project
-![badge](https://github.com/nrsmac/cloud-course-project/actions/workflows/build-test-publish.yaml/badge.svg)
+# s3-files-api
+![badge](https://github.com/nrsmac/s3-files-api/actions/workflows/build-test-publish.yaml/badge.svg)
 
 A project to demonstrate building high-quality APIs and SDKs with FastAPI.
 
