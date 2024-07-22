@@ -3,6 +3,7 @@
 
 A project to demonstrate building high-quality APIs and SDKs with FastAPI.
 
+
 Features:
 - OpenAPI schema generation and diffing
 - Automatic Python SDK generation
@@ -20,6 +21,7 @@ You will need the following installed on your machine to develop on this codebas
 
 ```bash
 # clone the repo
+
 git clone https://github.com/nrsmac/s3_files_api.git
 
 # Create a virtual env
