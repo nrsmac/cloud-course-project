@@ -2,6 +2,7 @@
 
 import pydantic
 from fastapi import FastAPI
+from fastapi.routing import APIRoute
 
 from files_api.errors import (
     handle_broad_exceptions,
@@ -11,11 +12,21 @@ from files_api.routes import ROUTER
 from files_api.settings import Settings
 
 
+def custom_generate_unique_id(route: APIRoute):
+    """Generate a unique ID for a FastAPI route."""
+    return f"{route.tags[0]}-{route.name}"
+
+
 def create_app(settings: Settings | None = None) -> FastAPI:
     """Create a FastAPI application with the specified S3 bucket name."""
     settings = settings or Settings()
 
-    app = FastAPI()
+    app = FastAPI(
+        title="Files API",
+        description="An API to upload and retrieve files.",
+        generate_unique_id_function=custom_generate_unique_id,
+        version="0.1.0",
+    )
     app.state.settings = settings
 
     app.include_router(ROUTER)

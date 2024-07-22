@@ -19,6 +19,25 @@ function install {
     python -m pip install --upgrade pip
     python -m pip install --editable "$THIS_DIR/[dev]"
 }
+
+# Auto-generate an SDK from the OpenAPI spec
+function generate-client-library {
+    docker run --rm \
+        -v ${PWD}:/local openapitools/openapi-generator-cli generate \
+        --generator-name python-pydantic-v1 \
+        --input-spec /local/openapi.json \
+        --output /local/files-api-sdk \
+        --package-name files_api_sdk
+}
+
+function install-generated-sdk {
+    # setting editable_mode=strict fixes an issue with autocompletion
+    # in VS Code when installing editable packages. See:
+    # https://github.com/microsoft/pylance-release/issues/3473
+    python -m pip install --editable "$THIS_DIR/files-api-sdk" \
+        --config-settings editable_mode=strict
+}
+
 # start the FastAPI app, enabling hot reload on save (assuming files_api packages is installed)
 function run {
     AWS_PROFILE=mlops-club S3_BUCKET_NAME="some-bucket" uvicorn src.files_api.main:create_app --reload --factory
