@@ -1,5 +1,10 @@
 # s3-files-api
 ![badge](https://github.com/nrsmac/s3-files-api/actions/workflows/build-test-publish.yaml/badge.svg)
+A project to demonstrate building high-quality APIs and SDKs with FastAPI.
+
+Features:
+- OpenAPI schema generation and diffing.
+- Automatic Python SDK generation
 
 ## Quick start
 
@@ -25,11 +30,14 @@ You will need the following installed on your machine to develop on this codebas
 
 ```bash
 # clone the repo
-git clone https://github.com/<your github username>/s3-files-api.git
+git clone https://github.com/nrsmac/s3-files-api.git
 
 # install the dev dependencies
 make install
 
 # run the tests
 make test
+# generate the sdk
+
+make generate-client-library
 ```
