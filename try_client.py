@@ -28,14 +28,14 @@ def main():
 
         try:
             # Upload File
-            api_response = api_instance.upload_file_v1_files_file_path_put(
+            api_response = api_instance.files_upload_file(
                 file_path=file_path,
                 file_content=file_content,
             )
-            print("The response of DefaultApi->upload_file_v1_files_file_path_put:\n")
+            print("The response of FilesApi->files_upload_file:\n")
             pprint(api_response)
         except ApiException as err:
-            print("Exception when calling DefaultApi->upload_file_v1_files_file_path_put: %s\n" % err)
+            print("Exception when calling FilesApi->files_upload_file: %s\n" % err)
 
 
 if __name__ == "__main__":

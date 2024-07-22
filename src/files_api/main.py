@@ -21,12 +21,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     settings = settings or Settings()
 
     app = FastAPI(
-        app=FastAPI(
-            title="Files API",
-            description="An API to upload and retrieve files.",
-            generate_unique_id_function=custom_generate_unique_id,
-            version="0.1.0",
-        )
+        title="Files API",
+        description="An API to upload and retrieve files.",
+        generate_unique_id_function=custom_generate_unique_id,
+        version="0.1.0",
     )
     app.state.settings = settings
 
