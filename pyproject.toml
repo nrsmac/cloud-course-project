@@ -3,7 +3,7 @@
 ############################
 
 [project]
-name = "cloud-course-project"
+name = "s3-files-api"
 description = "My package description"
 authors = [{ name = "Noah Schill", email = "noahrschill@gmail.com" }]
 readme = "README.md"
@@ -44,7 +44,7 @@ static-code-qa = [
 # - show enhanced autocompletion for stubs libraries
 # See .vscode/settings.json to see how VS Code is configured to use these tools
 dev = [
-    "cloud-course-project[test,release,static-code-qa,stubs,notebooks,api]",
+    "s3-files-api[test,release,static-code-qa,stubs,notebooks,api]",
 ] # Union, references test, release, static-code-qa
 
 [build-system]

@@ -1,1 +1,1 @@
-"""Automated tests for cloud-course-project."""
+"""Automated tests for s3-files-api."""

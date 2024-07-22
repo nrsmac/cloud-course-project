@@ -1,10 +1,10 @@
-# cloud-course-project
-![badge](https://github.com/nrsmac/cloud-course-project/actions/workflows/build-test-publish.yaml/badge.svg)
+# s3-files-api
+![badge](https://github.com/nrsmac/s3-files-api/actions/workflows/build-test-publish.yaml/badge.svg)
 
 ## Quick start
 
 ```bash
-pip install cloud-course-project
+pip install s3-files-api
 ```
 
 ```python
@@ -25,7 +25,7 @@ You will need the following installed on your machine to develop on this codebas
 
 ```bash
 # clone the repo
-git clone https://github.com/<your github username>/cloud-course-project.git
+git clone https://github.com/<your github username>/s3-files-api.git
 
 # install the dev dependencies
 make install
