@@ -16,6 +16,9 @@ build:
 generate-client-library:
 	bash run.sh generate-client-library
 
+install-generated-sdk:
+	bash run.sh install-generated-sdk
+
 clean:
 	bash run.sh clean
 

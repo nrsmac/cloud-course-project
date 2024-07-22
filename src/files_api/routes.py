@@ -1,5 +1,7 @@
 """API routes for the files API."""
 
+import re
+
 from fastapi import (
     APIRouter,
     Depends,
@@ -27,14 +29,20 @@ from files_api.schemas import (
 )
 from files_api.settings import Settings
 
-ROUTER = APIRouter()
+ROUTER = APIRouter(tags=["Files"])
 
 
-@ROUTER.put("/v1/files/{file_path:path}")
+@ROUTER.put(
+    "/v1/files/{file_path:path}",
+    responses={
+        status.HTTP_200_OK: {"model": PutFileResponse},
+        status.HTTP_201_CREATED: {"model": PutFileResponse},
+    },
+)
 async def upload_file(
     request: Request, file_path: str, file_content: UploadFile, response: Response
 ) -> PutFileResponse:
-    """Upload a file."""
+    """Upload or update a file."""
     settings: Settings = request.app.state.settings
     object_already_exists = object_exists_in_s3(
         bucket_name=settings.s3_bucket_name, object_key=file_path
@@ -58,7 +66,9 @@ async def upload_file(
     return PutFileResponse(file_path=file_path, message=response_message)
 
 
-@ROUTER.get("/v1/files")
+@ROUTER.get(
+    "/v1/files",
+)
 async def list_files(
     request: Request,
     query_params: GetFilesQueryParams = Depends(),
@@ -89,7 +99,33 @@ async def list_files(
     return GetFilesResponse(files=file_metadata_objs, next_page_token=next_page_token if next_page_token else None)
 
 
-@ROUTER.head("/v1/files/{file_path:path}")
+@ROUTER.head(
+    "/v1/files/{file_path:path}",
+    responses={
+        status.HTTP_404_NOT_FOUND: {
+            "description": "File not found for the given `file_path`.",
+        },
+        status.HTTP_200_OK: {
+            "headers": {
+                "Content-Type": {
+                    "description": "The [MIME type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types) of the file.",
+                    "example": "text/plain",
+                    "schema": {"type": "string"},
+                },
+                "Content-Length": {
+                    "description": "The size of the file in bytes.",
+                    "example": 512,
+                    "schema": {"type": "integer"},
+                },
+                "Last-Modified": {
+                    "description": "The last modified date of the file.",
+                    "example": "Thu, 01 Jan 2022 00:00:00 GMT",
+                    "schema": {"type": "string", "format": "date-time"},
+                },
+            }
+        },
+    },
+)
 async def get_file_metadata(request: Request, file_path: str, response: Response) -> Response:
     """
     Retrieve file metadata.
